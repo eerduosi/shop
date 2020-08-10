@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.shop.mapper.ProducttypeMapper">
+	<resultMap id="BaseResultMap"
+		type="com.shop.entity.Producttype">
+		<id column="producttypeid" jdbcType="INTEGER"
+			property="producttypeid" />
+		<result column="producttypename" jdbcType="VARCHAR"
+			property="producttypename" />
+		<result column="producttypecreatetime" jdbcType="TIMESTAMP"
+			property="producttypecreatetime" />
+		<result column="producttypeupdatetime" jdbcType="TIMESTAMP"
+			property="producttypeupdatetime" />
+	</resultMap>
+	<sql id="Base_Column_List">
+		producttypeid, producttypename, producttypecreatetime,
+		producttypeupdatetime
+	</sql>
+	<select id="selectById" parameterType="java.lang.Integer"
+		resultMap="BaseResultMap">
+		select
+		<include refid="Base_Column_List" />
+		from producttype
+		where producttypeid =
+		#{producttypeid,jdbcType=INTEGER}
+	</select>
+	<select id="selectAll" parameterType="java.lang.Integer"
+		resultMap="BaseResultMap">
+		select
+		<include refid="Base_Column_List" />
+		from producttype
+	</select>
+	<select id="checkByProducttypename"
+		resultMap="BaseResultMap">
+		select
+		<include refid="Base_Column_List" />
+		from producttype
+		where producttypename = #{producttypename}
+	</select>
+
+	<delete id="deleteById" parameterType="java.lang.Integer">
+		delete from producttype
+		where producttypeid = #{producttypeid,jdbcType=INTEGER}
+	</delete>
+	<insert id="insert" parameterType="com.shop.entity.Producttype">
+		insert into producttype
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			<if test="producttypeid != null">
+				producttypeid,
+			</if>
+			<if test="producttypename != null">
+				producttypename,
+			</if>
+			<if test="producttypecreatetime != null">
+				producttypecreatetime,
+			</if>
+			<if test="producttypeupdatetime != null">
+				producttypeupdatetime,
+			</if>
+		</trim>
+		<trim prefix="values (" suffix=")" suffixOverrides=",">
+			<if test="producttypeid != null">
+				#{producttypeid,jdbcType=INTEGER},
+			</if>
+			<if test="producttypename != null">
+				#{producttypename,jdbcType=VARCHAR},
+			</if>
+			<if test="producttypecreatetime != null">
+				#{producttypecreatetime,jdbcType=TIMESTAMP},
+			</if>
+			<if test="producttypeupdatetime != null">
+				#{producttypeupdatetime,jdbcType=TIMESTAMP},
+			</if>
+		</trim>
+	</insert>
+	<update id="update" parameterType="com.shop.entity.Producttype">
+		update producttype
+		<set>
+			<if test="producttypename != null">
+				producttypename = #{producttypename,jdbcType=VARCHAR},
+			</if>
+			<if test="producttypecreatetime != null">
+				producttypecreatetime =
+				#{producttypecreatetime,jdbcType=TIMESTAMP},
+			</if>
+			<if test="producttypeupdatetime != null">
+				producttypeupdatetime =
+				#{producttypeupdatetime,jdbcType=TIMESTAMP},
+			</if>
+		</set>
+		where producttypeid = #{producttypeid,jdbcType=INTEGER}
+	</update>
+</mapper>

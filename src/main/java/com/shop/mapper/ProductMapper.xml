@@ -1,0 +1,209 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.shop.mapper.ProductMapper">
+	<resultMap id="BaseResultMap" type="com.shop.entity.Product">
+		<id column="productid" jdbcType="INTEGER" property="productid" />
+		<result column="producttypeid" jdbcType="INTEGER"
+			property="producttypeid" />
+		<result column="productname" jdbcType="VARCHAR"
+			property="productname" />
+		<result column="productprice" jdbcType="VARCHAR"
+			property="productprice" />
+		<result column="productquantity" jdbcType="INTEGER"
+			property="productquantity" />
+		<result column="productdetail" jdbcType="VARCHAR"
+			property="productdetail" />
+		<result column="productsrc" jdbcType="VARCHAR"
+			property="productsrc" />
+		<result column="productcreatetime" jdbcType="TIMESTAMP"
+			property="productcreatetime" />
+		<result column="productupdatetime" jdbcType="TIMESTAMP"
+			property="productupdatetime" />
+	</resultMap>
+
+	<!-- 联合查询查商品类型 -->
+	<resultMap type="com.shop.entity.Product"
+		id="WithTypeResultMap" extends="BaseResultMap">
+		<association property="producttype"
+			javaType="com.shop.entity.Producttype">
+			<id column="producttypeid" property="producttypeid" />
+			<result column="producttypename" property="producttypename" />
+			<result column="producttypecreatetime"
+				property="producttypecreatetime" />
+			<result column="producttypeupdatetime"
+				property="producttypeupdatetime" />
+		</association>
+	</resultMap>
+	<sql id="Base_Column_List">
+		productid, producttypeid, productname, productprice,
+		productquantity,
+		productdetail,productsrc,
+		productcreatetime,
+		productupdatetime
+	</sql>
+	<sql id="WithType_Column_List">
+		p.productid, p.producttypeid, p.productname,
+		p.productprice,
+		p.productquantity,
+		p.productdetail,p.productsrc,
+		p.productcreatetime,
+		p.productupdatetime,pt.producttypeid,
+		pt.producttypename,pt.producttypecreatetime,pt.producttypeupdatetime
+	</sql>
+	<select id="selectById" parameterType="java.lang.Integer"
+		resultMap="WithTypeResultMap">
+		select
+		<include refid="WithType_Column_List" />
+		from product p,producttype pt
+		where p.productid =
+		#{productid,jdbcType=INTEGER}
+		and p.producttypeid = pt.producttypeid
+		limit 1
+	</select>
+
+	<select id="selectAll" parameterType="java.lang.Integer"
+		resultMap="BaseResultMap">
+		select
+		<include refid="Base_Column_List" />
+		from product
+	</select>
+
+	<!-- 依据商品类型查商品 -->
+	<select id="selectByTypeId" parameterType="java.lang.Integer"
+		resultMap="WithTypeResultMap">
+		select
+		<include refid="WithType_Column_List" />
+		from product p
+		left join producttype pt on
+		p.producttypeid=pt.producttypeid
+		where
+		p.producttypeid=#{producttypeid,jdbcType=INTEGER}
+		order by p.productid
+	</select>
+
+	<!-- 查看所有商品 -->
+	<select id="selectAllWithType" parameterType="java.lang.Integer"
+		resultMap="WithTypeResultMap">
+		select
+		<include refid="WithType_Column_List" />
+		from product p
+		left join producttype pt on
+		p.producttypeid=pt.producttypeid
+		order by p.productid
+	</select>
+
+	<select id="checkByProductname" resultMap="BaseResultMap">
+		select
+		<include refid="Base_Column_List" />
+		from product
+		where productname = #{productname}
+	</select>
+
+	<select id="checkByProductnameAndProductid" resultMap="BaseResultMap">
+		select
+		<include refid="Base_Column_List" />
+		from product
+		where productname = #{productname}
+		and productid != #{productid}
+	</select>
+
+	<delete id="deleteById" parameterType="java.lang.Integer">
+		delete from product
+		where
+		productid = #{productid,jdbcType=INTEGER}
+	</delete>
+	<insert id="insert" parameterType="com.shop.entity.Product">
+		insert into product
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			<if test="productid != null">
+				productid,
+			</if>
+			<if test="producttypeid != null">
+				producttypeid,
+			</if>
+			<if test="productname != null">
+				productname,
+			</if>
+			<if test="productprice != null">
+				productprice,
+			</if>
+			<if test="productquantity != null">
+				productquantity,
+			</if>
+			<if test="productdetail != null">
+				productdetail,
+			</if>
+			<if test="productsrc != null">
+				productsrc,
+			</if>
+			<if test="productcreatetime != null">
+				productcreatetime,
+			</if>
+			<if test="productupdatetime != null">
+				productupdatetime,
+			</if>
+		</trim>
+		<trim prefix="values (" suffix=")" suffixOverrides=",">
+			<if test="productid != null">
+				#{productid,jdbcType=INTEGER},
+			</if>
+			<if test="producttypeid != null">
+				#{producttypeid,jdbcType=INTEGER},
+			</if>
+			<if test="productname != null">
+				#{productname,jdbcType=VARCHAR},
+			</if>
+			<if test="productprice != null">
+				#{productprice,jdbcType=VARCHAR},
+			</if>
+			<if test="productquantity != null">
+				#{productquantity,jdbcType=INTEGER},
+			</if>
+			<if test="productdetail != null">
+				#{productdetail,jdbcType=VARCHAR},
+			</if>
+			<if test="productsrc != null">
+				#{productsrc,jdbcType=VARCHAR},
+			</if>
+			<if test="productcreatetime != null">
+				#{productcreatetime,jdbcType=TIMESTAMP},
+			</if>
+			<if test="productupdatetime != null">
+				#{productupdatetime,jdbcType=TIMESTAMP},
+			</if>
+		</trim>
+	</insert>
+	<update id="update" parameterType="com.shop.entity.Product">
+		update product
+		<set>
+			<if test="producttypeid != null">
+				producttypeid = #{producttypeid,jdbcType=INTEGER},
+			</if>
+			<if test="productname != null">
+				productname = #{productname,jdbcType=VARCHAR},
+			</if>
+			<if test="productprice != null">
+				productprice = #{productprice,jdbcType=VARCHAR},
+			</if>
+			<if test="productquantity != null">
+				productquantity = #{productquantity,jdbcType=INTEGER},
+			</if>
+			<if test="productdetail != null">
+				productdetail = #{productdetail,jdbcType=VARCHAR},
+			</if>
+			<if test="productsrc != null">
+				productsrc = #{productsrc,jdbcType=VARCHAR},
+			</if>
+			<if test="productcreatetime != null">
+				productcreatetime =
+				#{productcreatetime,jdbcType=TIMESTAMP},
+			</if>
+			<if test="productupdatetime != null">
+				productupdatetime =
+				#{productupdatetime,jdbcType=TIMESTAMP},
+			</if>
+		</set>
+		where productid = #{productid,jdbcType=INTEGER}
+	</update>
+
+</mapper>

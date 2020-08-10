@@ -1,0 +1,166 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.shop.mapper.CartMapper">
+	<resultMap id="BaseResultMap" type="com.shop.entity.Cart">
+		<id column="cartid" jdbcType="INTEGER" property="cartid" />
+		<result column="userid" jdbcType="INTEGER" property="userid" />
+		<result column="productid" jdbcType="INTEGER"
+			property="productid" />
+		<result column="quantity" jdbcType="INTEGER"
+			property="quantity" />
+		<result column="cartcreatetime" jdbcType="TIMESTAMP"
+			property="cartcreatetime" />
+		<result column="cartupdatetime" jdbcType="TIMESTAMP"
+			property="cartupdatetime" />
+	</resultMap>
+	<resultMap type="com.shop.entity.Cart"
+		id="WithProductResultMap" extends="BaseResultMap">
+		<association property="user"
+			javaType="com.shop.entity.User">
+			<id column="userid" jdbcType="INTEGER" property="userid" />
+			<result column="username" jdbcType="VARCHAR"
+				property="username" />
+			<result column="userpassword" jdbcType="VARCHAR"
+				property="userpassword" />
+			<result column="userphone" jdbcType="VARCHAR"
+				property="userphone" />
+			<result column="usergender" jdbcType="INTEGER"
+				property="usergender" />
+			<result column="userquestion" jdbcType="VARCHAR"
+				property="userquestion" />
+			<result column="useranswer" jdbcType="VARCHAR"
+				property="useranswer" />
+			<result column="usertype" jdbcType="INTEGER"
+				property="usertype" />
+			<result column="usercreatetime" jdbcType="TIMESTAMP"
+				property="usercreatetime" />
+			<result column="userupdatetime" jdbcType="TIMESTAMP"
+				property="userupdatetime" />
+		</association>
+		<association property="product"
+			javaType="com.shop.entity.Product">
+			<id column="productid" jdbcType="INTEGER" property="productid" />
+			<result column="producttypeid" jdbcType="INTEGER"
+				property="producttypeid" />
+			<result column="productname" jdbcType="VARCHAR"
+				property="productname" />
+			<result column="productprice" jdbcType="VARCHAR"
+				property="productprice" />
+			<result column="productquantity" jdbcType="INTEGER"
+				property="productquantity" />
+			<result column="productdetail" jdbcType="VARCHAR"
+				property="productdetail" />
+			<result column="productsrc" jdbcType="VARCHAR"
+				property="productsrc" />
+			<result column="productcreatetime" jdbcType="TIMESTAMP"
+				property="productcreatetime" />
+			<result column="productupdatetime" jdbcType="TIMESTAMP"
+				property="productupdatetime" />
+		</association>
+	</resultMap>
+	<sql id="Base_Column_List">
+		cartid, userid, productid, quantity, cartcreatetime, cartupdatetime
+	</sql>
+	<sql id="WithProduct_Column_List">
+		c.cartid, c.userid, c.productid, c.quantity,
+		u.userid, u.username,
+		p.productid, p.producttypeid,
+		p.productname,p.productprice,p.productquantity,p.productdetail,p.productsrc
+	</sql>
+	<select id="selectById" parameterType="java.lang.Integer"
+		resultMap="BaseResultMap">
+		select
+		<include refid="Base_Column_List" />
+		from cart
+		where cartid = #{cartid,jdbcType=INTEGER}
+	</select>
+	<select id="selectByProductid" parameterType="java.lang.Integer"
+		resultMap="BaseResultMap">
+		select
+		<include refid="Base_Column_List" />
+		from cart
+		where productid = #{productid,jdbcType=INTEGER}
+	</select>
+
+	<select id="selectByUseridWithProduct"
+		resultMap="WithProductResultMap">
+		select
+		<include refid="WithProduct_Column_List" />
+		from cart c,user u,product p
+		where c.userid = #{userid,jdbcType=INTEGER}
+		and c.userid=u.userid
+		and c.productid=p.productid
+		order by c.cartid
+	</select>
+
+	<delete id="deleteById" parameterType="java.lang.Integer">
+		delete from cart
+		where cartid = #{cartid,jdbcType=INTEGER}
+	</delete>
+
+	<insert id="insert" parameterType="com.shop.entity.Cart">
+		insert into cart
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			<if test="cartid != null">
+				cartid,
+			</if>
+			<if test="userid != null">
+				userid,
+			</if>
+			<if test="productid != null">
+				productid,
+			</if>
+			<if test="quantity != null">
+				quantity,
+			</if>
+			<if test="cartcreatetime != null">
+				cartcreatetime,
+			</if>
+			<if test="cartupdatetime != null">
+				cartupdatetime,
+			</if>
+		</trim>
+		<trim prefix="values (" suffix=")" suffixOverrides=",">
+			<if test="cartid != null">
+				#{cartid,jdbcType=INTEGER},
+			</if>
+			<if test="userid != null">
+				#{userid,jdbcType=INTEGER},
+			</if>
+			<if test="productid != null">
+				#{productid,jdbcType=INTEGER},
+			</if>
+			<if test="quantity != null">
+				#{quantity,jdbcType=INTEGER},
+			</if>
+			<if test="cartcreatetime != null">
+				#{cartcreatetime,jdbcType=TIMESTAMP},
+			</if>
+			<if test="cartupdatetime != null">
+				#{cartupdatetime,jdbcType=TIMESTAMP},
+			</if>
+		</trim>
+	</insert>
+	<update id="update" parameterType="com.shop.entity.Cart">
+		update cart
+		<set>
+			<if test="userid != null">
+				userid = #{userid,jdbcType=INTEGER},
+			</if>
+			<if test="productid != null">
+				productid = #{productid,jdbcType=INTEGER},
+			</if>
+			<if test="quantity != null">
+				quantity = #{quantity,jdbcType=INTEGER},
+			</if>
+			<if test="cartcreatetime != null">
+				cartcreatetime = #{cartcreatetime,jdbcType=TIMESTAMP},
+			</if>
+			<if test="cartupdatetime != null">
+				cartupdatetime = #{cartupdatetime,jdbcType=TIMESTAMP},
+			</if>
+		</set>
+		where cartid = #{cartid,jdbcType=INTEGER}
+	</update>
+
+</mapper>

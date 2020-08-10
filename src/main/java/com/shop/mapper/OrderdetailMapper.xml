@@ -1,0 +1,223 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.shop.mapper.OrderdetailMapper">
+	<resultMap id="BaseResultMap"
+		type="com.shop.entity.Orderdetail">
+		<id column="orderdetailid" jdbcType="INTEGER"
+			property="orderdetailid" />
+		<result column="userid" jdbcType="INTEGER" property="userid" />
+		<result column="orderno" jdbcType="INTEGER" property="orderno" />
+		<result column="productid" jdbcType="INTEGER"
+			property="productid" />
+		<result column="productcurrentprice" jdbcType="VARCHAR"
+			property="productcurrentprice" />
+		<result column="productquantity" jdbcType="INTEGER"
+			property="productquantity" />
+		<result column="producttotalprice" jdbcType="VARCHAR"
+			property="producttotalprice" />
+		<result column="orderdetailcreatetime" jdbcType="TIMESTAMP"
+			property="orderdetailcreatetime" />
+		<result column="orderdetailupdatetime" jdbcType="TIMESTAMP"
+			property="orderdetailupdatetime" />
+	</resultMap>
+	<resultMap id="ManyResultMap"
+		type="com.shop.entity.Orderdetail" extends="BaseResultMap">
+		<association property="user"
+			javaType="com.shop.entity.User">
+			<id column="userid" jdbcType="INTEGER" property="userid" />
+			<result column="username" jdbcType="VARCHAR"
+				property="username" />
+			<result column="userpassword" jdbcType="VARCHAR"
+				property="userpassword" />
+			<result column="userphone" jdbcType="VARCHAR"
+				property="userphone" />
+			<result column="usergender" jdbcType="INTEGER"
+				property="usergender" />
+			<result column="userquestion" jdbcType="VARCHAR"
+				property="userquestion" />
+			<result column="useranswer" jdbcType="VARCHAR"
+				property="useranswer" />
+			<result column="usertype" jdbcType="INTEGER"
+				property="usertype" />
+			<result column="usercreatetime" jdbcType="TIMESTAMP"
+				property="usercreatetime" />
+			<result column="userupdatetime" jdbcType="TIMESTAMP"
+				property="userupdatetime" />
+		</association>
+		<association property="product"
+			javaType="com.shop.entity.Product">
+			<id column="productid" jdbcType="INTEGER" property="productid" />
+			<result column="producttypeid" jdbcType="INTEGER"
+				property="producttypeid" />
+			<result column="productname" jdbcType="VARCHAR"
+				property="productname" />
+			<result column="productprice" jdbcType="VARCHAR"
+				property="productprice" />
+			<result column="productquantity" jdbcType="INTEGER"
+				property="productquantity" />
+			<result column="productdetail" jdbcType="VARCHAR"
+				property="productdetail" />
+			<result column="productsrc" jdbcType="VARCHAR"
+				property="productsrc" />
+			<result column="productcreatetime" jdbcType="TIMESTAMP"
+				property="productcreatetime" />
+			<result column="productupdatetime" jdbcType="TIMESTAMP"
+				property="productupdatetime" />
+		</association>
+		<association property="order"
+			javaType="com.shop.entity.Order">
+			<id column="orderid" jdbcType="INTEGER" property="orderid" />
+			<result column="userid" jdbcType="INTEGER" property="userid" />
+			<result column="orderno" jdbcType="INTEGER" property="orderno" />
+			<result column="addressid" jdbcType="INTEGER"
+				property="addressid" />
+			<result column="ordercash" jdbcType="VARCHAR"
+				property="ordercash" />
+			<result column="ordersendtime" jdbcType="VARCHAR"
+				property="ordersendtime" />
+			<result column="orderendtime" jdbcType="VARCHAR"
+				property="orderendtime" />
+			<result column="ordercreatetime" jdbcType="TIMESTAMP"
+				property="ordercreatetime" />
+			<result column="orderupdatetime" jdbcType="TIMESTAMP"
+				property="orderupdatetime" />
+		</association>
+	</resultMap>
+	<sql id="Base_Column_List">
+		orderdetailid, userid, orderno, productid, productcurrentprice, productquantity,
+		producttotalprice, orderdetailcreatetime, orderdetailupdatetime
+	</sql>
+	<sql id="Many_Column_List">
+		od.orderdetailid, od.userid, od.orderno, od.productid, od.productcurrentprice, od.productquantity,
+		od.producttotalprice, od.orderdetailcreatetime, od.orderdetailupdatetime,
+		u.userid, u.username, u.userpassword, u.userphone, u.usergender,
+		u.userquestion,u.useranswer,u.usertype, u.usercreatetime, u.userupdatetime,
+		p.productid, p.producttypeid, p.productname,p.productprice,	p.productquantity, p.productdetail,p.productsrc, p.productcreatetime, p.productupdatetime,
+		o.orderid, o.userid, o.orderno, o.addressid, o.ordercash, o.ordersendtime, o.orderendtime, o.ordercreatetime, o.orderupdatetime
+	</sql>
+	<select id="selectById" parameterType="java.lang.Integer"
+		resultMap="BaseResultMap">
+		select
+		<include refid="Base_Column_List" />
+		from orderdetail
+		where orderdetailid = #{orderdetailid,jdbcType=INTEGER}
+	</select>
+	<!-- 通过userid,productid,orderno查找订单详情 -->
+	<select id="selectByUserid" parameterType="java.lang.Integer" resultMap="ManyResultMap">
+		select
+		<include refid="Many_Column_List" />
+		from orderdetail od, orders o,user u, product p
+		where od.userid = u.userid
+		and od.productid = p.productid
+		and od.orderno = o.orderno
+		and od.userid = #{userid}
+	</select>
+	<select id="selectByOrderno" parameterType="java.lang.Integer" resultMap="ManyResultMap">
+		select
+		<include refid="Many_Column_List" />
+		from orderdetail od
+		left join orders o on od.orderno = o.orderno
+		left join user u on od.userid = u.userid
+		left join product p on od.productid = p.productid
+		where od.orderno = #{orderno}
+	</select>
+	<delete id="deleteById" parameterType="java.lang.Integer">
+		delete from orderdetail
+		where orderdetailid = #{orderdetailid,jdbcType=INTEGER}
+	</delete>
+	<delete id="deleteByOrderno" parameterType="java.lang.Integer">
+		delete from orderdetail
+		where orderno = #{orderno,jdbcType=INTEGER}
+	</delete>
+	<insert id="insert" parameterType="com.shop.entity.Orderdetail">
+		insert into orderdetail
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			<if test="orderdetailid != null">
+				orderdetailid,
+			</if>
+			<if test="userid != null">
+				userid,
+			</if>
+			<if test="orderno != null">
+				orderno,
+			</if>
+			<if test="productid != null">
+				productid,
+			</if>
+			<if test="productcurrentprice != null">
+				productcurrentprice,
+			</if>
+			<if test="productquantity != null">
+				productquantity,
+			</if>
+			<if test="producttotalprice != null">
+				producttotalprice,
+			</if>
+			<if test="orderdetailcreatetime != null">
+				orderdetailcreatetime,
+			</if>
+			<if test="orderdetailupdatetime != null">
+				orderdetailupdatetime,
+			</if>
+		</trim>
+		<trim prefix="values (" suffix=")" suffixOverrides=",">
+			<if test="orderdetailid != null">
+				#{orderdetailid,jdbcType=INTEGER},
+			</if>
+			<if test="userid != null">
+				#{userid,jdbcType=INTEGER},
+			</if>
+			<if test="orderno != null">
+				#{orderno,jdbcType=INTEGER},
+			</if>
+			<if test="productid != null">
+				#{productid,jdbcType=INTEGER},
+			</if>
+			<if test="productcurrentprice != null">
+				#{productcurrentprice,jdbcType=VARCHAR},
+			</if>
+			<if test="productquantity != null">
+				#{productquantity,jdbcType=INTEGER},
+			</if>
+			<if test="producttotalprice != null">
+				#{producttotalprice,jdbcType=VARCHAR},
+			</if>
+			<if test="orderdetailcreatetime != null">
+				#{orderdetailcreatetime,jdbcType=TIMESTAMP},
+			</if>
+			<if test="orderdetailupdatetime != null">
+				#{orderdetailupdatetime,jdbcType=TIMESTAMP},
+			</if>
+		</trim>
+	</insert>
+	<update id="update" parameterType="com.shop.entity.Orderdetail">
+		update orderdetail
+		<set>
+			<if test="userid != null">
+				userid = #{userid,jdbcType=INTEGER},
+			</if>
+			<if test="orderno != null">
+				orderno = #{orderno,jdbcType=INTEGER},
+			</if>
+			<if test="productid != null">
+				productid = #{productid,jdbcType=INTEGER},
+			</if>
+			<if test="productcurrentprice != null">
+				productcurrentprice = #{productcurrentprice,jdbcType=VARCHAR},
+			</if>
+			<if test="productquantity != null">
+				productquantity = #{productquantity,jdbcType=INTEGER},
+			</if>
+			<if test="producttotalprice != null">
+				producttotalprice = #{producttotalprice,jdbcType=VARCHAR},
+			</if>
+			<if test="orderdetailcreatetime != null">
+				orderdetailcreatetime = #{orderdetailcreatetime,jdbcType=TIMESTAMP},
+			</if>
+			<if test="orderdetailupdatetime != null">
+				orderdetailupdatetime = #{orderdetailupdatetime,jdbcType=TIMESTAMP},
+			</if>
+		</set>
+		where orderdetailid = #{orderdetailid,jdbcType=INTEGER}
+	</update>
+</mapper>

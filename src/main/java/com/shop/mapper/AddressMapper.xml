@@ -1,0 +1,179 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.shop.mapper.AddressMapper">
+	<resultMap id="BaseResultMap" type="com.shop.entity.Address">
+		<id column="addressid" jdbcType="INTEGER" property="addressid" />
+		<result column="userid" jdbcType="INTEGER" property="userid" />
+		<result column="receivername" jdbcType="VARCHAR"
+			property="receivername" />
+		<result column="receiverphone" jdbcType="VARCHAR"
+			property="receiverphone" />
+		<result column="receiveraddress" jdbcType="VARCHAR"
+			property="receiveraddress" />
+		<result column="receiverzip" jdbcType="VARCHAR"
+			property="receiverzip" />
+		<result column="receivercreatetime" jdbcType="TIMESTAMP"
+			property="receivercreatetime" />
+		<result column="receiverupdatetime" jdbcType="TIMESTAMP"
+			property="receiverupdatetime" />
+	</resultMap>
+
+	<resultMap type="com.shop.entity.Address"
+		id="WithUsernameResultMap" extends="BaseResultMap">
+		<association property="user"
+			javaType="com.shop.entity.User">
+			<id column="userid" jdbcType="INTEGER" property="userid" />
+			<result column="username" jdbcType="VARCHAR"
+				property="username" />
+			<result column="userpassword" jdbcType="VARCHAR"
+				property="userpassword" />
+			<result column="userphone" jdbcType="VARCHAR"
+				property="userphone" />
+			<result column="usergender" jdbcType="INTEGER"
+				property="usergender" />
+			<result column="userquestion" jdbcType="VARCHAR"
+				property="userquestion" />
+			<result column="useranswer" jdbcType="VARCHAR"
+				property="useranswer" />
+			<result column="usertype" jdbcType="INTEGER"
+				property="usertype" />
+			<result column="usercreatetime" jdbcType="TIMESTAMP"
+				property="usercreatetime" />
+			<result column="userupdatetime" jdbcType="TIMESTAMP"
+				property="userupdatetime" />
+		</association>
+	</resultMap>
+
+	<sql id="Base_Column_List">
+		addressid, userid, receivername, receiverphone, receiveraddress, receiverzip,
+		receivercreatetime,receiverupdatetime
+	</sql>
+	
+	<sql id="WithUsername_Column_List">
+		a.addressid, a.userid, a.receivername, a.receiverphone, a.receiveraddress, a.receiverzip,
+		a.receivercreatetime,a.receiverupdatetime,u.userid, u.username, u.userpassword, u.userphone, u.usergender,
+		u.userquestion,u.useranswer,u.usertype, u.usercreatetime, u.userupdatetime
+	</sql>
+
+
+	<!-- 这个是List -->
+	<select id="selectById" parameterType="java.lang.Integer"
+		resultMap="WithUsernameResultMap">
+		select
+		<include refid="WithUsername_Column_List" />
+		from address a
+		left join user u on a.userid = u.userid 
+		where a.addressid = #{addressid,jdbcType=INTEGER}
+	</select>
+
+	<!-- 这个不是List是单一个 -->
+	<select id="selectByAddressid" parameterType="java.lang.Integer"
+		resultMap="WithUsernameResultMap">
+		select
+		<include refid="WithUsername_Column_List" />
+		from address a
+		left join user u on a.userid = u.userid 
+		where a.addressid = #{addressid,jdbcType=INTEGER}
+	</select>
+
+	<select id="selectByUseridWithUsername" parameterType="java.lang.Integer"
+		resultMap="WithUsernameResultMap">
+		select
+		<include refid="WithUsername_Column_List" />
+		from address a
+		left join user u
+		on a.userid=u.userid
+		where a.userid = #{userid,jdbcType=INTEGER}
+		order by a.addressid
+	</select>
+
+	<delete id="deleteById" parameterType="java.lang.Integer">
+		delete from address
+		where addressid = #{addressid,jdbcType=INTEGER}
+	</delete>
+
+
+	<insert id="insert" parameterType="com.shop.entity.Address">
+		insert into address
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			<if test="addressid != null">
+				addressid,
+			</if>
+			<if test="userid != null">
+				userid,
+			</if>
+			<if test="receivername != null">
+				receivername,
+			</if>
+			<if test="receiverphone != null">
+				receiverphone,
+			</if>
+			<if test="receiveraddress != null">
+				receiveraddress,
+			</if>
+			<if test="receiverzip != null">
+				receiverzip,
+			</if>
+			<if test="receivercreatetime != null">
+				receivercreatetime,
+			</if>
+			<if test="receiverupdatetime != null">
+				receiverupdatetime,
+			</if>
+		</trim>
+		<trim prefix="values (" suffix=")" suffixOverrides=",">
+			<if test="addressid != null">
+				#{addressid,jdbcType=INTEGER},
+			</if>
+			<if test="userid != null">
+				#{userid,jdbcType=INTEGER},
+			</if>
+			<if test="receivername != null">
+				#{receivername,jdbcType=VARCHAR},
+			</if>
+			<if test="receiverphone != null">
+				#{receiverphone,jdbcType=VARCHAR},
+			</if>
+			<if test="receiveraddress != null">
+				#{receiveraddress,jdbcType=VARCHAR},
+			</if>
+			<if test="receiverzip != null">
+				#{receiverzip,jdbcType=VARCHAR},
+			</if>
+			<if test="receivercreatetime != null">
+				#{receivercreatetime,jdbcType=TIMESTAMP},
+			</if>
+			<if test="receiverupdatetime != null">
+				#{receiverupdatetime,jdbcType=TIMESTAMP},
+			</if>
+		</trim>
+	</insert>
+	<update id="update" parameterType="com.shop.entity.Address">
+		update address
+		<set>
+			<if test="userid != null">
+				userid = #{userid,jdbcType=INTEGER},
+			</if>
+			<if test="receivername != null">
+				receivername = #{receivername,jdbcType=VARCHAR},
+			</if>
+			<if test="receiverphone != null">
+				receiverphone = #{receiverphone,jdbcType=VARCHAR},
+			</if>
+			<if test="receiveraddress != null">
+				receiveraddress = #{receiveraddress,jdbcType=VARCHAR},
+			</if>
+			<if test="receiverzip != null">
+				receiverzip = #{receiverzip,jdbcType=VARCHAR},
+			</if>
+			<if test="receivercreatetime != null">
+				receivercreatetime = #{receivercreatetime,jdbcType=TIMESTAMP},
+			</if>
+			<if test="receiverupdatetime != null">
+				receiverupdatetime = #{receiverupdatetime,jdbcType=TIMESTAMP},
+			</if>
+		</set>
+		where addressid = #{addressid,jdbcType=INTEGER}
+	</update>
+
+</mapper>

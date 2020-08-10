@@ -1,0 +1,189 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.shop.mapper.OrderMapper">
+  <resultMap id="BaseResultMap" type="com.shop.entity.Order">
+    <id column="orderid" jdbcType="INTEGER" property="orderid" />
+    <result column="userid" jdbcType="INTEGER" property="userid" />
+    <result column="orderno" jdbcType="INTEGER" property="orderno" />
+    <result column="addressid" jdbcType="INTEGER" property="addressid" />
+    <result column="ordercash" jdbcType="VARCHAR" property="ordercash" />
+    <result column="ordersendtime" jdbcType="TIMESTAMP" property="ordersendtime" />
+    <result column="orderendtime" jdbcType="TIMESTAMP" property="orderendtime" />
+    <result column="ordercreatetime" jdbcType="TIMESTAMP" property="ordercreatetime" />
+    <result column="orderupdatetime" jdbcType="TIMESTAMP" property="orderupdatetime" />
+  </resultMap>
+  <resultMap type="com.shop.entity.Order" id="ManyResultMap" extends="BaseResultMap">
+  	<association property="user" javaType="com.shop.entity.User">
+  		<id column="userid" jdbcType="INTEGER" property="userid" />
+			<result column="username" jdbcType="VARCHAR"
+				property="username" />
+			<result column="userpassword" jdbcType="VARCHAR"
+				property="userpassword" />
+			<result column="userphone" jdbcType="VARCHAR"
+				property="userphone" />
+			<result column="usergender" jdbcType="INTEGER"
+				property="usergender" />
+			<result column="userquestion" jdbcType="VARCHAR"
+				property="userquestion" />
+			<result column="useranswer" jdbcType="VARCHAR"
+				property="useranswer" />
+			<result column="usertype" jdbcType="INTEGER"
+				property="usertype" />
+			<result column="usercreatetime" jdbcType="TIMESTAMP"
+				property="usercreatetime" />
+			<result column="userupdatetime" jdbcType="TIMESTAMP"
+				property="userupdatetime" />
+  	</association>
+  	<association property="address" javaType="com.shop.entity.Address">
+  		<id column="addressid" jdbcType="INTEGER" property="addressid" />
+		<result column="userid" jdbcType="INTEGER" property="userid" />
+		<result column="receivername" jdbcType="VARCHAR"
+			property="receivername" />
+		<result column="receiverphone" jdbcType="VARCHAR"
+			property="receiverphone" />
+		<result column="receiveraddress" jdbcType="VARCHAR"
+			property="receiveraddress" />
+		<result column="receiverzip" jdbcType="VARCHAR"
+			property="receiverzip" />
+		<result column="receivercreatetime" jdbcType="TIMESTAMP"
+			property="receivercreatetime" />
+		<result column="receiverupdatetime" jdbcType="TIMESTAMP"
+			property="receiverupdatetime" />
+  	</association>
+  </resultMap>
+  <sql id="Base_Column_List">
+    orderid, userid, orderno, addressid, ordercash, ordersendtime, orderendtime, ordercreatetime, orderupdatetime
+  </sql>
+  <sql id="Many_Column_List">
+  	o.orderid, o.userid, o.orderno, o.addressid, o.ordercash, o.ordersendtime, o.orderendtime, o.ordercreatetime, o.orderupdatetime,
+  	u.userid, u.username, u.userpassword, u.userphone, u.usergender,u.userquestion,u.useranswer,u.usertype, u.usercreatetime, u.userupdatetime,
+  	a.addressid, a.userid, a.receivername, a.receiverphone, a.receiveraddress, a.receiverzip, a.receivercreatetime, a.receiverupdatetime
+  </sql>
+  
+  <select id="selectById" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from orders
+    where orderid = #{orderid,jdbcType=INTEGER}
+  </select>
+  <select id="selectByOrderno" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from orders
+    where orderno = #{orderno,jdbcType=INTEGER}
+  </select>
+  <!-- 管理员查询所有订单 -->
+  <select id="selectAll" resultMap="ManyResultMap">
+  	select
+  	<include refid="Many_Column_List" />
+  	from orders o
+  	left join user u on
+  	o.userid = u.userid
+  	left join address a on
+  	o.addressid = a.addressid
+  </select>
+  <!-- 用户查询自己的订单 -->
+  <select id="selectByUserid" resultMap="ManyResultMap">
+  	select
+  	<include refid="Many_Column_List" />
+  	from orders o
+  	left join user u on o.userid = u.userid
+  	left join address a on o.addressid = a.addressid
+  	where o.userid = #{userid,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteById" parameterType="java.lang.Integer">
+    delete from orders
+    where orderid = #{orderid,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="com.shop.entity.Order">
+    insert into orders
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="orderid != null">
+        orderid,
+      </if>
+      <if test="userid != null">
+        userid,
+      </if>
+      <if test="orderno != null">
+        orderno,
+      </if>
+      <if test="addressid != null">
+        addressid,
+      </if>
+      <if test="ordercash != null">
+        ordercash,
+      </if>
+      <if test="ordersendtime != null">
+        ordersendtime,
+      </if>
+      <if test="orderendtime != null">
+        orderendtime,
+      </if>
+      <if test="ordercreatetime != null">
+        ordercreatetime,
+      </if>
+      <if test="orderupdatetime != null">
+        orderupdatetime,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="orderid != null">
+        #{orderid,jdbcType=INTEGER},
+      </if>
+      <if test="userid != null">
+        #{userid,jdbcType=INTEGER},
+      </if>
+      <if test="orderno != null">
+        #{orderno,jdbcType=INTEGER},
+      </if>
+      <if test="addressid != null">
+        #{addressid,jdbcType=INTEGER},
+      </if>
+      <if test="ordercash != null">
+        #{ordercash,jdbcType=VARCHAR},
+      </if>
+      <if test="ordersendtime != null">
+        #{ordersendtime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="orderendtime != null">
+        #{orderendtime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="ordercreatetime != null">
+        #{ordercreatetime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="orderupdatetime != null">
+        #{orderupdatetime,jdbcType=TIMESTAMP},
+      </if>
+    </trim>
+  </insert>
+  <update id="update" parameterType="com.shop.entity.Order">
+    update orders
+    <set>
+      <if test="userid != null">
+        userid = #{userid,jdbcType=INTEGER},
+      </if>
+      <if test="orderno != null">
+        orderno = #{orderno,jdbcType=INTEGER},
+      </if>
+      <if test="addressid != null">
+        addressid = #{addressid,jdbcType=INTEGER},
+      </if>
+      <if test="ordercash != null">
+        ordercash = #{ordercash,jdbcType=VARCHAR},
+      </if>
+      <if test="ordersendtime != null">
+        ordersendtime = #{ordersendtime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="orderendtime != null">
+        orderendtime = #{orderendtime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="ordercreatetime != null">
+        ordercreatetime = #{ordercreatetime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="orderupdatetime != null">
+        orderupdatetime = #{orderupdatetime,jdbcType=TIMESTAMP},
+      </if>
+    </set>
+    where orderid = #{orderid,jdbcType=INTEGER}
+  </update>
+</mapper>

@@ -1,0 +1,267 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.shop.mapper.UserMapper">
+	<resultMap id="BaseResultMap" type="com.shop.entity.User">
+		<id column="userid" jdbcType="INTEGER" property="userid" />
+		<result column="username" jdbcType="VARCHAR"
+			property="username" />
+		<result column="userpassword" jdbcType="VARCHAR"
+			property="userpassword" />
+		<result column="userphone" jdbcType="VARCHAR"
+			property="userphone" />
+		<result column="usergender" jdbcType="INTEGER"
+			property="usergender" />
+		<result column="userquestion" jdbcType="VARCHAR"
+			property="userquestion" />
+		<result column="useranswer" jdbcType="VARCHAR"
+			property="useranswer" />
+		<result column="usertype" jdbcType="INTEGER"
+			property="usertype" />
+		<result column="usercreatetime" jdbcType="TIMESTAMP"
+			property="usercreatetime" />
+		<result column="userupdatetime" jdbcType="TIMESTAMP"
+			property="userupdatetime" />
+	</resultMap>
+	<sql id="Base_Column_List">
+		userid, username, userpassword, userphone, usergender,
+		userquestion,
+		useranswer,
+		usertype, usercreatetime, userupdatetime
+	</sql>
+
+	<select id="selectById" parameterType="java.lang.Integer"
+		resultMap="BaseResultMap">
+		select
+		<include refid="Base_Column_List" />
+		from user
+		where userid = #{userid,jdbcType=INTEGER}
+	</select>
+
+	<select id="selectAll" parameterType="java.lang.Integer"
+		resultMap="BaseResultMap">
+		select
+		<include refid="Base_Column_List" />
+		from user
+	</select>
+
+	<select id="selectByUsertype" parameterType="java.lang.Integer"
+		resultMap="BaseResultMap">
+		select
+		<include refid="Base_Column_List" />
+		from user
+		where usertype = #{usertype,jdbcType=INTEGER}
+	</select>
+
+	<select id="login" resultMap="BaseResultMap">
+		select
+		<include refid="Base_Column_List" />
+		from user
+		where username = #{username}
+		and userpassword =
+		#{userpassword}
+	</select>
+
+	<select id="checkByUsername" resultMap="BaseResultMap">
+		select
+		<include refid="Base_Column_List" />
+		from user
+		where username = #{username}
+	</select>
+
+	<select id="checkByUsernameAndUserid" resultMap="BaseResultMap">
+		select
+		<include refid="Base_Column_List" />
+		from user
+		where username = #{username}
+		and userid != #{userid}
+	</select>
+
+	<select id="checkByUserphone" resultMap="BaseResultMap">
+		select
+		<include refid="Base_Column_List" />
+		from user
+		where userphone = #{userphone}
+	</select>
+
+	<select id="checkByUserphoneAndUserid" resultMap="BaseResultMap">
+		select
+		<include refid="Base_Column_List" />
+		from user
+		where userphone = #{userphone}
+		and userid != #{userid}
+	</select>
+
+	<delete id="deleteById" parameterType="java.lang.Integer">
+		delete from user
+		where
+		userid = #{userid,jdbcType=INTEGER}
+	</delete>
+
+	<insert id="insert" parameterType="com.shop.entity.User">
+		insert into user
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			<if test="userid != null">
+				userid,
+			</if>
+			<if test="username != null">
+				username,
+			</if>
+			<if test="userpassword != null">
+				userpassword,
+			</if>
+			<if test="userphone != null">
+				userphone,
+			</if>
+			<if test="usergender != null">
+				usergender,
+			</if>
+			<if test="userquestion != null">
+				userquestion,
+			</if>
+			<if test="useranswer != null">
+				useranswer,
+			</if>
+			<if test="usertype != null">
+				usertype,
+			</if>
+			<if test="usercreatetime != null">
+				usercreatetime,
+			</if>
+			<if test="userupdatetime != null">
+				userupdatetime,
+			</if>
+		</trim>
+		<trim prefix="values (" suffix=")" suffixOverrides=",">
+			<if test="userid != null">
+				#{userid,jdbcType=INTEGER},
+			</if>
+			<if test="username != null">
+				#{username,jdbcType=VARCHAR},
+			</if>
+			<if test="userpassword != null">
+				#{userpassword,jdbcType=VARCHAR},
+			</if>
+			<if test="userphone != null">
+				#{userphone,jdbcType=VARCHAR},
+			</if>
+			<if test="usergender != null">
+				#{usergender,jdbcType=INTEGER},
+			</if>
+			<if test="userquestion != null">
+				#{userquestion,jdbcType=VARCHAR},
+			</if>
+			<if test="useranswer != null">
+				#{useranswer,jdbcType=VARCHAR},
+			</if>
+			<if test="usertype != null">
+				#{usertype,jdbcType=INTEGER},
+			</if>
+			<if test="usercreatetime != null">
+				#{usercreatetime,jdbcType=TIMESTAMP},
+			</if>
+			<if test="userupdatetime != null">
+				#{userupdatetime,jdbcType=TIMESTAMP},
+			</if>
+		</trim>
+	</insert>
+	<insert id="regist" parameterType="com.shop.entity.User">
+		insert into user
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			<if test="userid != null">
+				userid,
+			</if>
+			<if test="username != null">
+				username,
+			</if>
+			<if test="userpassword != null">
+				userpassword,
+			</if>
+			<if test="userphone != null">
+				userphone,
+			</if>
+			<if test="usergender != null">
+				usergender,
+			</if>
+			<if test="userquestion != null">
+				userquestion,
+			</if>
+			<if test="useranswer != null">
+				useranswer,
+			</if>
+
+			usertype,
+
+			<if test="usercreatetime != null">
+				usercreatetime,
+			</if>
+			<if test="userupdatetime != null">
+				userupdatetime,
+			</if>
+		</trim>
+		<trim prefix="values (" suffix=")" suffixOverrides=",">
+			<if test="userid != null">
+				#{userid,jdbcType=INTEGER},
+			</if>
+			<if test="username != null">
+				#{username,jdbcType=VARCHAR},
+			</if>
+			<if test="userpassword != null">
+				#{userpassword,jdbcType=VARCHAR},
+			</if>
+			<if test="userphone != null">
+				#{userphone,jdbcType=VARCHAR},
+			</if>
+			<if test="usergender != null">
+				#{usergender,jdbcType=INTEGER},
+			</if>
+			<if test="userquestion != null">
+				#{userquestion,jdbcType=VARCHAR},
+			</if>
+			<if test="useranswer != null">
+				#{useranswer,jdbcType=VARCHAR},
+			</if>
+
+			0,
+
+			<if test="usercreatetime != null">
+				#{usercreatetime,jdbcType=TIMESTAMP},
+			</if>
+			<if test="userupdatetime != null">
+				#{userupdatetime,jdbcType=TIMESTAMP},
+			</if>
+		</trim>
+	</insert>
+	<update id="update" parameterType="com.shop.entity.User">
+		update user
+		<set>
+			<if test="username != null">
+				username = #{username,jdbcType=VARCHAR},
+			</if>
+			<if test="userpassword != null">
+				userpassword = #{userpassword,jdbcType=VARCHAR},
+			</if>
+			<if test="userphone != null">
+				userphone = #{userphone,jdbcType=VARCHAR},
+			</if>
+			<if test="usergender != null">
+				usergender = #{usergender,jdbcType=INTEGER},
+			</if>
+			<if test="userquestion != null">
+				userquestion = #{userquestion,jdbcType=VARCHAR},
+			</if>
+			<if test="useranswer != null">
+				useranswer = #{useranswer,jdbcType=VARCHAR},
+			</if>
+			<if test="usertype != null">
+				usertype = #{usertype,jdbcType=INTEGER},
+			</if>
+			<if test="usercreatetime != null">
+				usercreatetime = #{usercreatetime,jdbcType=TIMESTAMP},
+			</if>
+			<if test="userupdatetime != null">
+				userupdatetime = #{userupdatetime,jdbcType=TIMESTAMP},
+			</if>
+		</set>
+		where userid = #{userid,jdbcType=INTEGER}
+	</update>
+</mapper>

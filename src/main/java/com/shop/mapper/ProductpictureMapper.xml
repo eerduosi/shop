@@ -1,0 +1,180 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.shop.mapper.ProductpictureMapper">
+	<resultMap id="BaseResultMap"
+		type="com.shop.entity.Productpicture">
+		<id column="productpictureid" jdbcType="INTEGER"
+			property="productpictureid" />
+		<result column="productid" jdbcType="INTEGER"
+			property="productid" />
+		<result column="productpicturename" jdbcType="VARCHAR"
+			property="productpicturename" />
+		<result column="productpicturesrc" jdbcType="VARCHAR"
+			property="productpicturesrc" />
+		<result column="productpicturecreatetime" jdbcType="TIMESTAMP"
+			property="productpicturecreatetime" />
+		<result column="productpictureupdatetime" jdbcType="TIMESTAMP"
+			property="productpictureupdatetime" />
+	</resultMap>
+
+	<resultMap type="com.shop.entity.Productpicture"
+		id="WithProductnameResultMap" extends="BaseResultMap">
+		<association property="product" javaType="com.shop.entity.Product">
+			<id column="productid" jdbcType="INTEGER" property="productid" />
+			<result column="producttypeid" jdbcType="INTEGER"
+				property="producttypeid" />
+			<result column="productname" jdbcType="VARCHAR"
+				property="productname" />
+			<result column="productprice" jdbcType="VARCHAR"
+				property="productprice" />
+			<result column="productquantity" jdbcType="INTEGER"
+				property="productquantity" />
+			<result column="productdetail" jdbcType="VARCHAR"
+				property="productdetail" />
+			<result column="productcreatetime" jdbcType="TIMESTAMP"
+				property="productcreatetime" />
+			<result column="productupdatetime" jdbcType="TIMESTAMP"
+				property="productupdatetime" />
+		</association>
+	</resultMap>
+
+	<sql id="Base_Column_List">
+		productpictureid, productid,
+		productpicturename,productpicturesrc,
+		productpicturecreatetime,
+		productpictureupdatetime
+	</sql>
+
+	<sql id="WithProductname_Column_List">
+		pp.productpictureid, pp.productid,
+		pp.productpicturename,pp.productpicturesrc,
+		pp.productpicturecreatetime,
+		pp.productpictureupdatetime,
+		p.productid,p.productname
+	</sql>
+
+
+	<select id="selectById" parameterType="java.lang.Integer"
+		resultMap="WithProductnameResultMap">
+		select
+		<include refid="WithProductname_Column_List" />
+		from productpicture pp, product p
+		where pp.productpictureid =
+		#{productpictureid,jdbcType=INTEGER}
+		and pp.productid = p.productid
+		limit 1
+	</select>
+
+	<!-- 获取商品图片 -->
+	<select id="selectAll" parameterType="java.lang.Integer"
+		resultMap="BaseResultMap">
+		select
+		<include refid="Base_Column_List" />
+		from productpicture
+	</select>
+
+
+	<select id="selectByProductid"
+		parameterType="java.lang.Integer" resultMap="WithProductnameResultMap">
+		select
+		<include refid="WithProductname_Column_List" />
+		from productpicture pp
+		left join product p on
+		pp.productid = p.productid
+		where p.productid = #{productid,jdbcType=INTEGER}
+		order by pp.productpictureid
+	</select>
+	
+	<select id="selectAllWithProductname"
+		parameterType="java.lang.Integer" resultMap="WithProductnameResultMap">
+		select
+		<include refid="WithProductname_Column_List" />
+		from productpicture pp
+		left join product p on
+		pp.productid = p.productid
+		order by pp.productpictureid
+	</select>
+
+
+
+
+	<delete id="deleteById" parameterType="java.lang.Integer">
+		delete from productpicture
+		where productpictureid = #{productpictureid,jdbcType=INTEGER}
+	</delete>
+	
+
+	<insert id="insert"
+		parameterType="com.shop.entity.Productpicture">
+		insert into productpicture
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			<if test="productpictureid != null">
+				productpictureid,
+			</if>
+			<if test="productid != null">
+				productid,
+			</if>
+			<if test="productpicturename != null">
+				productpicturename,
+			</if>
+			<if test="productpicturesrc != null">
+				productpicturesrc,
+			</if>
+			<if test="productpicturecreatetime != null">
+				productpicturecreatetime,
+			</if>
+			<if test="productpictureupdatetime != null">
+				productpictureupdatetime,
+			</if>
+		</trim>
+		<trim prefix="values (" suffix=")" suffixOverrides=",">
+			<if test="productpictureid != null">
+				#{productpictureid,jdbcType=INTEGER},
+			</if>
+			<if test="productid != null">
+				#{productid,jdbcType=INTEGER},
+			</if>
+			<if test="productpicturename != null">
+				#{productpicturename,jdbcType=VARCHAR},
+			</if>
+			<if test="productpicturesrc != null">
+				#{productpicturesrc,jdbcType=VARCHAR},
+			</if>
+			<if test="productpicturecreatetime != null">
+				#{productpicturecreatetime,jdbcType=TIMESTAMP},
+			</if>
+			<if test="productpictureupdatetime != null">
+				#{productpictureupdatetime,jdbcType=TIMESTAMP},
+			</if>
+		</trim>
+	</insert>
+
+
+	<update id="update"
+		parameterType="com.shop.entity.Productpicture">
+		update productpicture
+		<set>
+			<if test="productid != null">
+				productid = #{productid,jdbcType=INTEGER},
+			</if>
+			<if test="productpicturename != null">
+				productpicturename =
+				#{productpicturename,jdbcType=VARCHAR},
+			</if>
+			<if test="productpicturesrc != null">
+				productpicturesrc =
+				#{productpicturesrc,jdbcType=VARCHAR},
+			</if>
+			<if test="productpicturecreatetime != null">
+				productpicturecreatetime =
+				#{productpicturecreatetime,jdbcType=TIMESTAMP},
+			</if>
+			<if test="productpictureupdatetime != null">
+				productpictureupdatetime =
+				#{productpictureupdatetime,jdbcType=TIMESTAMP},
+			</if>
+		</set>
+		where productpictureid = #{productpictureid,jdbcType=INTEGER}
+	</update>
+
+</mapper>
